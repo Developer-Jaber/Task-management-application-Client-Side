@@ -1,3 +1,5 @@
+import "../assets/css/Dashboard.css"
+
 const Dashboard = () => {
   return (
     <section className='flex bg-gray-100 min-h-screen'>
