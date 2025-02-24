@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import '../assets/css/Dashboard.css'
 import CustomCalendar from '../Components/CustomCalendar'
 import TodaysTask from '../Components/TodaysTask'
+import MyCategory from '../Components/MyCategory'
 
 const Dashboard = () => {
   return (
@@ -77,6 +78,9 @@ const Dashboard = () => {
           </div>
           <div>
             <TodaysTask></TodaysTask>
+          </div>
+          <div>
+            <MyCategory></MyCategory>
           </div>
           {/* <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
            
