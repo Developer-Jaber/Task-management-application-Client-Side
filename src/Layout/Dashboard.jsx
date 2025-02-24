@@ -1,32 +1,43 @@
-import "../assets/css/Dashboard.css"
+import { Link } from 'react-router-dom'
+import '../assets/css/Dashboard.css'
+import CustomCalendar from '../Components/CustomCalendar'
 
 const Dashboard = () => {
   return (
     <section className='flex bg-gray-100 min-h-screen'>
       {/* Sidebar */}
-      <aside className='bg-white shadow-lg w-64'>
+      <aside className='bg-white shadow-lg m-3 rounded-lg w-64'>
         <div className='p-6'>
-          <h1 className='font-bold text-blue-600 text-2xl'>Task Manager</h1>
+          <h1 className='font-bold text-blue-600 text-2xl'>Task Vibe</h1>
         </div>
         <nav className='mt-6'>
           <ul>
             <li className='hover:bg-gray-100 px-6 py-2'>
-              <a href='#' className='flex items-center text-gray-700'>
+              <Link to='/' className='flex items-center text-gray-700'>
+                <span className='mr-2'>📋</span>
+                Dashboard
+              </Link>
+            </li>
+
+            <li className='hover:bg-gray-100 px-6 py-2'>
+              <Link to='#' className='flex items-center text-gray-700'>
                 <span className='mr-2'>📋</span>
                 Tasks
-              </a>
+              </Link>
             </li>
+
             <li className='hover:bg-gray-100 px-6 py-2'>
-              <a href='#' className='flex items-center text-gray-700'>
+              <Link to='#' className='flex items-center text-gray-700'>
                 <span className='mr-2'>📊</span>
                 Analytics
-              </a>
+              </Link>
             </li>
+
             <li className='hover:bg-gray-100 px-6 py-2'>
-              <a href='#' className='flex items-center text-gray-700'>
+              <Link to='#' className='flex items-center text-gray-700'>
                 <span className='mr-2'>⚙️</span>
                 Settings
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
@@ -35,7 +46,7 @@ const Dashboard = () => {
       {/* Main Section */}
       <aside className='flex flex-col flex-1'>
         {/* Navigation Bar */}
-        <nav className='bg-white shadow-sm p-4'>
+        <nav className='bg-white shadow-sm mt-5 mr-5 ml-2 p-4 rounded-lg'>
           <div className='flex justify-between items-center'>
             <div className='flex items-center'>
               <input
@@ -60,7 +71,9 @@ const Dashboard = () => {
 
         {/* Content Section */}
         <section className='flex-1 p-6'>
-          <h2 className='mb-4 font-bold text-gray-800 text-xl'>Dashboard</h2>
+          <div>
+            <CustomCalendar></CustomCalendar>
+          </div>
           <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
             {/* Card 1 */}
             <div className='bg-white shadow-md p-6 rounded-lg'>
