@@ -6,7 +6,7 @@ import { AuthContext } from '../Provider/AuthProvider'
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true) // Toggle between login and signup
-  const { createUser, loginUser, loginWithGoogle } = useContext(AuthContext)
+  const { createUser, loginUser, loginWithGoogle ,updateUserprofile} = useContext(AuthContext)
 
   const handleLogin = values => {
     loginUser(values.email, values.password)
@@ -20,7 +20,13 @@ const LoginPage = () => {
   const handleSignup = values => {
     createUser(values.email, values.password)
       .then(() => {
-        message.success('Signup successful!')
+        updateUserprofile(values.displayName,values.photoURL)
+        .then(()=>{
+          message.success('Signup successful!')
+        })
+        .catch(() => {
+          message.error('Signup faild!')
+        })
       })
       .catch(() => {
         message.error('Signup faild!')

@@ -5,11 +5,12 @@ import {
 } from "react-router-dom";
 import Dashboard from "../Layout/Dashboard";
 import LoginPage from "../Page/Login";
+import PrivetRoute from "./PrivetRoute";
 
  const router = createBrowserRouter([
     {
         path: '/',
-        element: <Dashboard></Dashboard>
+        element: <PrivetRoute><Dashboard></Dashboard></PrivetRoute>
     },
     {
         path: '/login',
