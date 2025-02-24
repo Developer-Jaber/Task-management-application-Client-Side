@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import '../assets/css/Dashboard.css'
 import CustomCalendar from '../Components/CustomCalendar'
+import TodaysTask from '../Components/TodaysTask'
 
 const Dashboard = () => {
   return (
@@ -70,29 +71,32 @@ const Dashboard = () => {
         </nav>
 
         {/* Content Section */}
-        <section className='flex-1 p-6'>
+        <section className='gap-6 grid grid-cols-1 md:grid-cols-2'>
           <div>
             <CustomCalendar></CustomCalendar>
           </div>
-          <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-            {/* Card 1 */}
+          <div>
+            <TodaysTask></TodaysTask>
+          </div>
+          {/* <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+           
             <div className='bg-white shadow-md p-6 rounded-lg'>
               <h3 className='font-semibold text-gray-800 text-lg'>To-Do</h3>
               <p className='mt-2 text-gray-600'>5 tasks pending</p>
             </div>
-            {/* Card 2 */}
+           
             <div className='bg-white shadow-md p-6 rounded-lg'>
               <h3 className='font-semibold text-gray-800 text-lg'>
                 In Progress
               </h3>
               <p className='mt-2 text-gray-600'>3 tasks in progress</p>
             </div>
-            {/* Card 3 */}
+            
             <div className='bg-white shadow-md p-6 rounded-lg'>
               <h3 className='font-semibold text-gray-800 text-lg'>Done</h3>
               <p className='mt-2 text-gray-600'>10 tasks completed</p>
-            </div>
-          </div>
+            </div> 
+          </div> */}
         </section>
       </aside>
     </section>
