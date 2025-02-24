@@ -8,7 +8,8 @@ import {
   } from 'firebase/auth'
   import { GoogleAuthProvider } from 'firebase/auth'
   import { createContext, useEffect, useState } from 'react'
-import auth from '../Firebase/auth'
+import auth from '../Firebase/auth.init'
+
 
   
   // eslint-disable-next-line react-refresh/only-export-components
