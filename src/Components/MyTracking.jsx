@@ -18,7 +18,7 @@ const MyTracking = () => {
   };
 
   return (
-    <div className="bg-white shadow-lg p-6 rounded-lg">
+    <div className="bg-white shadow-lg mr-7 mb-4 p-4 p-6 rounded-lg">
       <h2 className="mb-4 font-bold text-gray-800 text-xl">My Tracking</h2>
 
       {/* Progress Bars */}

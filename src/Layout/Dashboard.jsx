@@ -1,9 +1,6 @@
-import { Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import '../assets/css/Dashboard.css'
-import CustomCalendar from '../Components/CustomCalendar'
-import TodaysTask from '../Components/TodaysTask'
-import MyCategory from '../Components/MyCategory'
-import MyTracking from '../Components/MyTracking'
+import { DashboardOutlined } from '@ant-design/icons'
 
 const Dashboard = () => {
   return (
@@ -17,7 +14,7 @@ const Dashboard = () => {
           <ul>
             <li className='hover:bg-gray-100 px-6 py-2'>
               <Link to='/' className='flex items-center text-gray-700'>
-                <span className='mr-2'>📋</span>
+                <span className='mr-2'><DashboardOutlined /></span>
                 Dashboard
               </Link>
             </li>
@@ -73,38 +70,8 @@ const Dashboard = () => {
         </nav>
 
         {/* Content Section */}
-        <section className='gap-6 grid grid-cols-1 md:grid-cols-2 overscroll-auto'>
-          <div>
-            <CustomCalendar></CustomCalendar>
-          </div>
-          <div>
-            <TodaysTask></TodaysTask>
-          </div>
-          <div>
-            <MyCategory></MyCategory>
-          </div>
-          <div>
-            <MyTracking></MyTracking>
-          </div>
-          {/* <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-           
-            <div className='bg-white shadow-md p-6 rounded-lg'>
-              <h3 className='font-semibold text-gray-800 text-lg'>To-Do</h3>
-              <p className='mt-2 text-gray-600'>5 tasks pending</p>
-            </div>
-           
-            <div className='bg-white shadow-md p-6 rounded-lg'>
-              <h3 className='font-semibold text-gray-800 text-lg'>
-                In Progress
-              </h3>
-              <p className='mt-2 text-gray-600'>3 tasks in progress</p>
-            </div>
-            
-            <div className='bg-white shadow-md p-6 rounded-lg'>
-              <h3 className='font-semibold text-gray-800 text-lg'>Done</h3>
-              <p className='mt-2 text-gray-600'>10 tasks completed</p>
-            </div> 
-          </div> */}
+        <section>
+          <Outlet></Outlet>
         </section>
       </aside>
     </section>
