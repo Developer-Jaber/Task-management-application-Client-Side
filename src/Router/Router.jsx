@@ -6,6 +6,7 @@ import {
 import Dashboard from "../Layout/Dashboard";
 import LoginPage from "../Page/Login";
 import PrivetRoute from "./PrivetRoute";
+import MyTaskPage from "../Page/MyTaskPage";
 
  const router = createBrowserRouter([
     {
@@ -15,6 +16,10 @@ import PrivetRoute from "./PrivetRoute";
     {
         path: '/login',
         element: <LoginPage></LoginPage>
+    },
+    {
+        path: '/my-task',
+        element: <MyTaskPage></MyTaskPage>
     }
  ])
 

@@ -23,7 +23,7 @@ const Dashboard = () => {
             </li>
 
             <li className='hover:bg-gray-100 px-6 py-2'>
-              <Link to='#' className='flex items-center text-gray-700'>
+              <Link to='my-task' className='flex items-center text-gray-700'>
                 <span className='mr-2'>📋</span>
                 Tasks
               </Link>
