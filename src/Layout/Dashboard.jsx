@@ -3,6 +3,7 @@ import '../assets/css/Dashboard.css'
 import CustomCalendar from '../Components/CustomCalendar'
 import TodaysTask from '../Components/TodaysTask'
 import MyCategory from '../Components/MyCategory'
+import MyTracking from '../Components/MyTracking'
 
 const Dashboard = () => {
   return (
@@ -72,7 +73,7 @@ const Dashboard = () => {
         </nav>
 
         {/* Content Section */}
-        <section className='gap-6 grid grid-cols-1 md:grid-cols-2'>
+        <section className='gap-6 grid grid-cols-1 md:grid-cols-2 overscroll-auto'>
           <div>
             <CustomCalendar></CustomCalendar>
           </div>
@@ -81,6 +82,9 @@ const Dashboard = () => {
           </div>
           <div>
             <MyCategory></MyCategory>
+          </div>
+          <div>
+            <MyTracking></MyTracking>
           </div>
           {/* <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
            
