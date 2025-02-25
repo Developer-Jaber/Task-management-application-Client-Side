@@ -1,8 +1,12 @@
 import { Link, Outlet } from 'react-router-dom'
 import '../assets/css/Dashboard.css'
 import { DashboardOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import AddTaskModal from '../Components/AddTaskModal'
 
 const Dashboard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
     <section className='flex bg-gray-100 min-h-screen'>
       {/* Sidebar */}
@@ -14,7 +18,9 @@ const Dashboard = () => {
           <ul>
             <li className='hover:bg-gray-100 px-6 py-2'>
               <Link to='/' className='flex items-center text-gray-700'>
-                <span className='mr-2'><DashboardOutlined /></span>
+                <span className='mr-2'>
+                  <DashboardOutlined />
+                </span>
                 Dashboard
               </Link>
             </li>
@@ -56,6 +62,12 @@ const Dashboard = () => {
               />
             </div>
             <div className='flex items-center space-x-4'>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className='bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white'
+              >
+                Add Task
+              </button>
               <button className='text-gray-600 hover:text-blue-600'>🔔</button>
               <div className='flex items-center'>
                 <img
@@ -74,6 +86,7 @@ const Dashboard = () => {
           <Outlet></Outlet>
         </section>
       </aside>
+      <AddTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   )
 }
