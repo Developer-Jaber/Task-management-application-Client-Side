@@ -4,6 +4,7 @@ import LoginPage from '../Page/Login'
 import PrivetRoute from './PrivetRoute'
 import MyTaskPage from '../Page/MyTaskPage'
 import LandingPage from '../Page/LandingPage'
+import ProfilePage from '../Page/ProfilePage'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: '/my-task',
         element: <MyTaskPage></MyTaskPage>
+      },
+      {
+        path: '/profile',
+        element: <ProfilePage></ProfilePage>
       }
     ]
   },

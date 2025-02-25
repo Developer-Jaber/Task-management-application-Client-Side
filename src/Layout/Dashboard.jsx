@@ -1,11 +1,13 @@
 import { Link, Outlet } from 'react-router-dom'
 import '../assets/css/Dashboard.css'
 import { DashboardOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import AddTaskModal from '../Components/AddTaskModal'
+import { AuthContext } from '../Provider/AuthProvider'
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { user } = useContext(AuthContext)
 
   return (
     <section className='flex bg-gray-100 min-h-screen'>
@@ -70,12 +72,14 @@ const Dashboard = () => {
               </button>
               <button className='text-gray-600 hover:text-blue-600'>🔔</button>
               <div className='flex items-center'>
-                <img
-                  src='https://via.placeholder.com/40'
-                  alt='User'
-                  className='rounded-full w-8 h-8'
-                />
-                <span className='ml-2 text-gray-700'>John Doe</span>
+                <Link to='profile'>
+                  <img
+                    src='https://via.placeholder.com/40'
+                    alt='User'
+                    className='rounded-full w-8 h-8'
+                  />
+                </Link>
+                <span className='ml-2 text-gray-700'>{user?.displyName}</span>
               </div>
             </div>
           </div>
@@ -86,7 +90,10 @@ const Dashboard = () => {
           <Outlet></Outlet>
         </section>
       </aside>
-      <AddTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AddTaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   )
 }
