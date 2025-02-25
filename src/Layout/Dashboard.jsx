@@ -82,7 +82,7 @@ const Dashboard = () => {
         </nav>
 
         {/* Content Section */}
-        <section>
+        <section className='h-[calc(100vh-5rem)] overflow-y-auto'>
           <Outlet></Outlet>
         </section>
       </aside>
