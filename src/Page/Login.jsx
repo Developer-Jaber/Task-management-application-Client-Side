@@ -3,10 +3,11 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { useContext, useState } from 'react'
 import '../assets/css/Login.css'
 import { AuthContext } from '../Provider/AuthProvider'
+import axios from 'axios'
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true) // Toggle between login and signup
-  const { createUser, loginUser, loginWithGoogle ,updateUserprofile} = useContext(AuthContext)
+  const { createUser, loginUser ,updateUserprofile} = useContext(AuthContext)
 
   const handleLogin = values => {
     loginUser(values.email, values.password)
@@ -22,7 +23,10 @@ const LoginPage = () => {
       .then(() => {
         updateUserprofile(values.displayName,values.photoURL)
         .then(()=>{
-          message.success('Signup successful!')
+          axios.post('http://localhost:5000/user',values)
+          .then(()=>{
+            message.success('Signup successful!')
+          })
         })
         .catch(() => {
           message.error('Signup faild!')
@@ -113,10 +117,17 @@ const LoginPage = () => {
               onFinish={handleSignup}
             >
               <Form.Item
-                name='name'
+                name='displayName'
                 rules={[{ required: true, message: 'Please input your name!' }]}
               >
                 <Input prefix={<UserOutlined />} placeholder='Name' />
+              </Form.Item>
+
+              <Form.Item
+                name='photoURL'
+                rules={[{ required: true, message: 'Please input your photoURL!' }]}
+              >
+                <Input prefix={<UserOutlined />} placeholder='photoURL' />
               </Form.Item>
 
               <Form.Item
