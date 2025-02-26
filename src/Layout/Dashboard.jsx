@@ -74,12 +74,12 @@ const Dashboard = () => {
               <div className='flex items-center'>
                 <Link to='profile'>
                   <img
-                    src='https://via.placeholder.com/40'
-                    alt='User'
-                    className='rounded-full w-8 h-8'
+                    src={user?.photoURL}
+                    alt={user?.displayName}
+                    className='rounded-full w-8 h-8 object-cover'
                   />
                 </Link>
-                <span className='ml-2 text-gray-700'>{user?.displyName}</span>
+                <span className='ml-2 text-gray-700'>{user?.displayName}</span>
               </div>
             </div>
           </div>
