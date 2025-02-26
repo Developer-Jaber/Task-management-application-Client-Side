@@ -1,13 +1,17 @@
 import { message } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const AddTaskModal = ({ isOpen, onClose }) => {
+  const {user} = useContext(AuthContext);
+
   const [task, setTask] = useState({
     title: "",
     description: "",
     dueDate: "",
     status: "Pending",
+    email: user.email
   });
 
   const handleInputChange = (e) => {
