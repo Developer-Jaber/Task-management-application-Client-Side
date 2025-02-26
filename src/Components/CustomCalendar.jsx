@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+
 
 const CustomCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // Track the current date
@@ -50,7 +51,7 @@ const CustomCalendar = () => {
     const firstDayOfMonth = getFirstDayOfMonth(year, month);
 
     const calendarDays = [];
-    let dayCounter = 1;
+    // let dayCounter = 1;
 
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
