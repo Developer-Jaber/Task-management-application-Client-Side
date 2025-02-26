@@ -1,3 +1,5 @@
+import { message } from "antd";
+import axios from "axios";
 import { useState } from "react";
 
 const AddTaskModal = ({ isOpen, onClose }) => {
@@ -15,8 +17,15 @@ const AddTaskModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Task Added:", task);
+
     onClose(); // Close modal after submission
+    axios.post('http://localhost:5000/task',task)
+    .then(()=>{
+      message.success('Successfuly added new task.')
+    })
+    .catch(()=>{
+      message.error("Can't added task!")
+    })
     setTask({ title: "", description: "", dueDate: "", status: "Pending" }); // Reset form
   };
 
