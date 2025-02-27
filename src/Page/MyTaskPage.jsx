@@ -1,92 +1,174 @@
-
+import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { message } from 'antd';
+import { AuthContext } from '../Provider/AuthProvider';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { SortableTask } from '../Components/SortableTask';
 
 const MyTaskPage = () => {
-  // Sample tasks grouped by date
-  const tasksByDate = [
-    {
-      date: "October 25, 2023",
-      tasks: [
-        {
-          id: 1,
-          title: "Complete project report",
-          description: "Finish the final draft of the project report.",
-          status: "In Progress",
-        },
-        {
-          id: 2,
-          title: "Team meeting",
-          description: "Discuss project updates with the team.",
-          status: "Completed",
-        },
-      ],
-    },
-    {
-      date: "October 26, 2023",
-      tasks: [
-        {
-          id: 3,
-          title: "Review design mockups",
-          description: "Provide feedback on the new design mockups.",
-          status: "Pending",
-        },
-      ],
-    },
-    {
-      date: "October 27, 2023",
-      tasks: [
-        {
-          id: 4,
-          title: "Submit weekly report",
-          description: "Submit the weekly progress report to the manager.",
-          status: "Pending",
-        },
-      ],
-    },
-  ];
+  const { user } = useContext(AuthContext);
+  const [tasksByDate, setTasksByDate] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch tasks from the backend API
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/task/email/${user.email}`
+        ); // Replace with your API endpoint
+        const tasks = response.data;
+
+        // Group tasks by date
+        const groupedTasks = groupTasksByDate(tasks);
+        setTasksByDate(groupedTasks);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        message.error('Failed to fetch tasks.');
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, [user.email]);
+
+  // Helper function to group tasks by date
+  const groupTasksByDate = (tasks) => {
+    const grouped = {};
+
+    tasks.forEach((task) => {
+      const date = new Date(task.dueDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+
+      grouped[date].push(task);
+    });
+
+    // Convert the grouped object into an array of objects
+    return Object.keys(grouped).map((date) => ({
+      date,
+      tasks: grouped[date],
+    }));
+  };
+
+  // Handle task deletion
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axios.delete(`http://localhost:5000/tasks/${taskId}`); // Replace with your API endpoint
+      message.success('Task deleted successfully!');
+
+      // Refetch tasks to update the UI
+      const updatedTasksByDate = tasksByDate.map((group) => ({
+        ...group,
+        tasks: group.tasks.filter((task) => task._id !== taskId),
+      }));
+      setTasksByDate(updatedTasksByDate);
+    } catch (err) {
+      message.error('Failed to delete task.');
+      console.error(err);
+    }
+  };
+
+  // Handle drag-and-drop reordering
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setTasksByDate((prevTasksByDate) => {
+        const updatedTasksByDate = prevTasksByDate.map((group) => {
+          const tasks = [...group.tasks];
+          const oldIndex = tasks.findIndex((task) => task._id === active.id);
+          const newIndex = tasks.findIndex((task) => task._id === over.id);
+
+          // Reorder tasks
+          if (oldIndex !== -1 && newIndex !== -1) {
+            const [removed] = tasks.splice(oldIndex, 1);
+            tasks.splice(newIndex, 0, removed);
+          }
+
+          return { ...group, tasks };
+        });
+
+        return updatedTasksByDate;
+      });
+    }
+  };
+
+  // Sensors for drag-and-drop
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  if (loading) {
+    return <p className="p-6 text-gray-600">Loading tasks...</p>;
+  }
+
+  if (error) {
+    return <p className="p-6 text-red-500">Error: {error}</p>;
+  }
 
   return (
     <div className="bg-gray-100 p-6 min-h-screen">
       <h1 className="mb-6 font-bold text-gray-800 text-2xl">My Tasks</h1>
 
-      {/* Task List Grouped by Date */}
-      <div className="space-y-6">
-        {tasksByDate.map((group) => (
-          <div key={group.date} className="bg-white shadow-lg rounded-lg">
-            {/* Date Header */}
-            <div className="p-4 border-gray-200 border-b">
-              <h2 className="font-semibold text-gray-800 text-lg">{group.date}</h2>
-            </div>
+      {/* Drag-and-drop context */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="space-y-6">
+          {tasksByDate.map((group) => (
+            <div key={group.date} className="bg-white shadow-lg rounded-lg">
+              {/* Date Header */}
+              <div className="p-4 border-gray-200 border-b">
+                <h2 className="font-semibold text-gray-800 text-lg">
+                  {group.date}
+                </h2>
+              </div>
 
-            {/* Task List */}
-            <div className="p-4">
-              {group.tasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="hover:bg-gray-50 mb-4 p-4 rounded-lg transition-colors"
-                >
-                  <h3 className="font-medium text-gray-800 text-lg">
-                    {task.title}
-                  </h3>
-                  <p className="mt-1 text-gray-600 text-sm">{task.description}</p>
-                  <div className="flex items-center mt-2">
-                    <span
-                      className={`text-sm font-semibold ${
-                        task.status === "Completed"
-                          ? "text-green-500"
-                          : task.status === "In Progress"
-                          ? "text-blue-500"
-                          : "text-yellow-500"
-                      }`}
-                    >
-                      {task.status}
-                    </span>
-                  </div>
+              {/* Sortable task list */}
+              <SortableContext
+                items={group.tasks.map((task) => task._id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="p-4">
+                  {group.tasks.map((task) => (
+                    <SortableTask
+                      key={task._id}
+                      task={task}
+                      onDelete={handleDeleteTask}
+                    />
+                  ))}
                 </div>
-              ))}
+              </SortableContext>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </DndContext>
     </div>
   );
 };
