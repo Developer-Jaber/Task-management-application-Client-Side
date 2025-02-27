@@ -1,108 +1,156 @@
-import React, { useState } from "react";
+import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../Provider/AuthProvider';
+import { message } from 'antd';
 
-const TodaysTask = () => {
-  const [tasks, setTasks] = useState([
-    { id: 1, text: "Complete project report", completed: false },
-    { id: 2, text: "Team meeting at 10 AM", completed: true },
-    { id: 3, text: "Review design mockups", completed: false },
-  ]);
+const DailyTaskComponent = () => {
+  const { user } = useContext(AuthContext);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [checkedTasks, setCheckedTasks] = useState([]); // Track checked tasks
 
-  const [newTask, setNewTask] = useState("");
+  // Fetch tasks from the API
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/task/email/${user.email}`
+        );
+        setTasks(response.data); // Assuming the API returns an array of tasks
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        message.error(err.message);
+      }
+    };
 
-  // Function to toggle task completion
-  const toggleTaskCompletion = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    fetchTasks();
+  }, [user]);
+
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+
+  // Filter tasks for today
+  const todaysTasks = tasks.filter(task => task.dueDate === today);
+
+  // Handle checkbox click
+  const handleCheckboxClick = taskId => {
+    // Update the task status to "In Progress"
+    const updatedTasks = tasks.map(task =>
+      task._id === taskId ? { ...task, status: 'In Progress' } : task
     );
-  };
+    setTasks(updatedTasks);
 
-  // Function to add a new task
-  const addTask = () => {
-    if (newTask.trim() !== "") {
-      setTasks([
-        ...tasks,
-        { id: tasks.length + 1, text: newTask, completed: false },
-      ]);
-      setNewTask("");
+    // Add or remove the task from the checkedTasks list
+    if (checkedTasks.includes(taskId)) {
+      setCheckedTasks(checkedTasks.filter(id => id !== taskId));
+    } else {
+      setCheckedTasks([...checkedTasks, taskId]);
     }
   };
 
-  // Calculate progress
-  const completedTasks = tasks.filter((task) => task.completed).length;
-  const totalTasks = tasks.length;
-  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  // Handle submit
+  const handleSubmit = async () => {
+    try {
+      // Mark all checked tasks as "Completed"
+      const updatedTasks = tasks.map(task =>
+        checkedTasks.includes(task._id)
+          ? { ...task, status: 'Completed' }
+          : task
+      );
+
+      // Update each task individually
+      for (const taskId of checkedTasks) {
+        await axios.put(`http://localhost:5000/task/${taskId}`, {
+          status: 'Completed',
+        });
+      }
+
+      // Update the UI
+      setTasks(updatedTasks);
+      setCheckedTasks([]); // Clear the checked tasks
+      message.success('Tasks updated successfully!');
+    } catch (err) {
+      setError('Failed to update tasks.');
+      message.error('Failed to update tasks.');
+      console.error(err);
+    }
+  };
+
+  if (loading) {
+    return <p className='text-gray-600'>Loading tasks...</p>;
+  }
+
+  if (error) {
+    return <p className='text-red-500'>Error: {error}</p>;
+  }
 
   return (
-    <div className="bg-white shadow-lg mt-16 mr-7 p-6 rounded-lg">
-      <h2 className="mb-4 font-bold text-gray-800 text-xl">Today's Tasks</h2>
+    <div className='bg-white shadow-lg mt-16 mr-8 p-6 rounded-lg'>
+      <h2 className='mb-4 font-bold text-gray-800 text-xl'>Today's Tasks</h2>
 
-      {/* Progress Bar */}
-      <div className="mb-6">
-        <div className="flex justify-between mb-2">
-          <span className="font-medium text-gray-700 text-sm">Progress</span>
-          <span className="font-medium text-gray-700 text-sm">
-            {completedTasks}/{totalTasks} tasks
-          </span>
-        </div>
-        <div className="bg-gray-200 rounded-full w-full h-2">
-          <div
-            className="bg-blue-500 rounded-full h-2"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-      </div>
-
-      {/* Task List */}
-      <div className="space-y-4">
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-4 rounded-lg"
-          >
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => toggleTaskCompletion(task.id)}
-                className="border-gray-300 rounded focus:ring-blue-500 w-5 h-5 text-blue-500"
-              />
-              <span
-                className={`ml-3 text-gray-700 ${
-                  task.completed ? "line-through text-gray-400" : ""
-                }`}
-              >
-                {task.text}
-              </span>
+      {/* Display today's tasks */}
+      {todaysTasks.length > 0 ? (
+        <div className='space-y-4'>
+          {todaysTasks.map(task => (
+            <div
+              key={task._id}
+              className='hover:bg-gray-50 p-4 border border-gray-200 rounded-lg transition-colors'
+            >
+              <div className='flex justify-between items-center'>
+                <div>
+                  <h3 className='font-medium text-gray-800 text-lg'>
+                    {task.title}
+                  </h3>
+                  <p className='mt-1 text-gray-600 text-sm'>
+                    {task.description}
+                  </p>
+                  <div className='flex items-center mt-2'>
+                    <span
+                      className={`text-sm font-semibold ${
+                        task.status === 'Completed'
+                          ? 'text-green-500'
+                          : task.status === 'In Progress'
+                          ? 'text-blue-500'
+                          : 'text-yellow-500'
+                      }`}
+                    >
+                      {task.status}
+                    </span>
+                    <span className='ml-2 text-gray-600 text-sm'>
+                      Due: {task.dueDate}
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type='checkbox'
+                  checked={checkedTasks.includes(task._id)}
+                  onChange={() => handleCheckboxClick(task._id)}
+                  className='border-gray-300 rounded focus:ring-blue-500 w-5 h-5 text-blue-500'
+                  disabled={task.status === 'Completed'} // Disable checkbox if task is completed
+                />
+              </div>
             </div>
-            {task.completed && (
-              <span className="text-green-500 text-sm">✔️ Done</span>
-            )}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className='text-gray-600'>No tasks for today.</p>
+      )}
 
-      {/* Add New Task */}
-      <div className="mt-6">
-        <div className="flex">
-          <input
-            type="text"
-            value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
-            placeholder="Add a new task..."
-            className="flex-1 p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+      {/* Submit Button */}
+      {checkedTasks.length > 0 && (
+        <div className='mt-6'>
           <button
-            onClick={addTask}
-            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            onClick={handleSubmit}
+            className='bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white'
           >
-            Add
+            Submit Tasks
           </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
-export default TodaysTask;
+export default DailyTaskComponent;
