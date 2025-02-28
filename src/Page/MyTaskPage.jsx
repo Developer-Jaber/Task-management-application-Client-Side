@@ -74,7 +74,8 @@ const MyTaskPage = () => {
   // Handle task deletion
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/tasks/${taskId}`); // Replace with your API endpoint
+      console.log(taskId);
+      await axios.delete(`http://localhost:5000/task/${taskId}`); 
       message.success('Task deleted successfully!');
 
       // Refetch tasks to update the UI

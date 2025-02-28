@@ -15,6 +15,7 @@ export const SortableTask = ({ task, onDelete }) => {
     transition,
   };
 
+
   return (
     <div
       ref={setNodeRef}
