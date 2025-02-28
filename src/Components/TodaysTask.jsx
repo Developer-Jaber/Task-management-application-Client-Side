@@ -15,7 +15,7 @@ const DailyTaskComponent = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/task/email/${user.email}`
+          `https://task-management-application-server-side-six.vercel.app/task/email/${user.email}`
         );
         setTasks(response.data); // Assuming the API returns an array of tasks
         setLoading(false);
@@ -62,7 +62,7 @@ const DailyTaskComponent = () => {
 
       // Update each task individually
       for (const taskId of checkedTasks) {
-        await axios.put(`http://localhost:5000/task/${taskId}`, {
+        await axios.put(`https://task-management-application-server-side-six.vercel.app/task/${taskId}`, {
           status: 'Completed',
         });
       }

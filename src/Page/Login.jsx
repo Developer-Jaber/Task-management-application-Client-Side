@@ -7,7 +7,7 @@ import axios from 'axios'
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true) // Toggle between login and signup
-  const { createUser, loginUser ,updateUserprofile} = useContext(AuthContext)
+  const { createUser, loginUser, updateUserprofile } = useContext(AuthContext)
 
   const handleLogin = values => {
     loginUser(values.email, values.password)
@@ -21,16 +21,15 @@ const LoginPage = () => {
   const handleSignup = values => {
     createUser(values.email, values.password)
       .then(() => {
-        updateUserprofile(values.displayName,values.photoURL)
-        .then(()=>{
-          axios.post('http://localhost:5000/user',values)
-          .then(()=>{
-            message.success('Signup successful!')
+        updateUserprofile(values.displayName, values.photoURL)
+          .then(() => {
+            axios.post('https://task-management-application-server-side-six.vercel.app/user', values).then(() => {
+              message.success('Signup successful!')
+            })
           })
-        })
-        .catch(() => {
-          message.error('Signup faild!')
-        })
+          .catch(() => {
+            message.error('Signup faild!')
+          })
       })
       .catch(() => {
         message.error('Signup faild!')
@@ -125,7 +124,9 @@ const LoginPage = () => {
 
               <Form.Item
                 name='photoURL'
-                rules={[{ required: true, message: 'Please input your photoURL!' }]}
+                rules={[
+                  { required: true, message: 'Please input your photoURL!' }
+                ]}
               >
                 <Input prefix={<UserOutlined />} placeholder='photoURL' />
               </Form.Item>

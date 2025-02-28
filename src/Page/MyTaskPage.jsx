@@ -28,7 +28,7 @@ const MyTaskPage = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/task/email/${user.email}`
+          `https://task-management-application-server-side-six.vercel.app/task/email/${user.email}`
         ); // Replace with your API endpoint
         const tasks = response.data;
 
@@ -75,7 +75,7 @@ const MyTaskPage = () => {
   const handleDeleteTask = async (taskId) => {
     try {
       console.log(taskId);
-      await axios.delete(`http://localhost:5000/task/${taskId}`); 
+      await axios.delete(`https://task-management-application-server-side-six.vercel.app/task/${taskId}`); 
       message.success('Task deleted successfully!');
 
       // Refetch tasks to update the UI

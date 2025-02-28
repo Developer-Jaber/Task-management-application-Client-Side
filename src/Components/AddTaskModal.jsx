@@ -23,7 +23,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
     e.preventDefault();
 
     onClose(); // Close modal after submission
-    axios.post('http://localhost:5000/task',task)
+    axios.post('https://task-management-application-server-side-six.vercel.app/task',task)
     .then(()=>{
       message.success('Successfuly added new task.')
     })
